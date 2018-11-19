@@ -8,7 +8,6 @@
 RGB_LED rgbLed;
 
 static bool hasWifi = false;
-static int rgbLEDState = 0;
 static int rgbLEDR = 0;
 static int rgbLEDG = 0;
 static int rgbLEDB = 0;
@@ -51,10 +50,6 @@ void parseTwinMessage(DEVICE_TWIN_UPDATE_STATE updateState, const char *message)
         JSON_Object *desired_object = json_object_get_object(root_object, "desired");
         if (desired_object != NULL)
         {
-          if (json_object_has_value(desired_object, "rgbLEDState"))
-          {
-            rgbLEDState = json_object_get_number(desired_object, "rgbLEDState");
-          }
           if (json_object_has_value(desired_object, "rgbLEDR"))
           {
             rgbLEDR = json_object_get_number(desired_object, "rgbLEDR");
@@ -71,10 +66,6 @@ void parseTwinMessage(DEVICE_TWIN_UPDATE_STATE updateState, const char *message)
     }
     else
     {
-      if (json_object_has_value(root_object, "rgbLEDState"))
-      {
-        rgbLEDState = json_object_get_number(root_object, "rgbLEDState");
-      }
       if (json_object_has_value(root_object, "rgbLEDR"))
       {
         rgbLEDR = json_object_get_number(root_object, "rgbLEDR");
@@ -89,15 +80,8 @@ void parseTwinMessage(DEVICE_TWIN_UPDATE_STATE updateState, const char *message)
       }
     }
 
-    if (rgbLEDState == 0)
-    {
-      rgbLed.turnOff();
-    }
-    else
-    {
-      rgbLed.setColor(rgbLEDR, rgbLEDG, rgbLEDB);
-    }
-
+    rgbLed.setColor(rgbLEDR, rgbLEDG, rgbLEDB);
+    
     json_value_free(root_value);
     
     Screen.print(3, " > Updating...");
@@ -138,16 +122,7 @@ void setup()
 void loop()
 {
   DevKitMQTTClient_Check();
-
-  if (rgbLEDState == 0)
-  {
-    rgbLed.turnOff();
-  }
-  else
-  {
-    rgbLed.setColor(rgbLEDR, rgbLEDG, rgbLEDB);
-  }
-
+  rgbLed.setColor(rgbLEDR, rgbLEDG, rgbLEDB);
   Screen.print(3, " > Waiting");
 
   delay(100);

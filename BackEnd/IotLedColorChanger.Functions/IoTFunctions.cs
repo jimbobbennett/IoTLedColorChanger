@@ -32,6 +32,23 @@ namespace IotLedColorChanger.Functions
 
             log.LogInformation($"Update LED to R:{red} G:{green} B:{blue}");
 
+            var twin = await registryManager.GetTwinAsync(deviceName);
+
+            var patch = new
+            {
+                properties = new
+                {
+                    desired = new
+                    {
+                        rgbLEDR = red,
+                        rgbLEDG = green,
+                        rgbLEDB = blue,
+                    }
+                }
+            };
+
+            await registryManager.UpdateTwinAsync(twin.DeviceId, JsonConvert.SerializeObject(patch), twin.ETag);
+
             return new OkResult();
         }
     }
