@@ -47,7 +47,8 @@ namespace IotLedColorChanger.Functions
                 }
             };
 
-            await registryManager.UpdateTwinAsync(twin.DeviceId, JsonConvert.SerializeObject(patch), twin.ETag);
+            var jsonPatch = JsonConvert.SerializeObject(patch);
+            await registryManager.UpdateTwinAsync(twin.DeviceId, jsonPatch, twin.ETag);
 
             return new OkResult();
         }
