@@ -9,11 +9,17 @@ using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.Azure.Devices;
 
 namespace IotLedColorChanger.Functions
 {
-    public static class UpdateLedRgb
+    public static class IoTFunctions
     {
+        static readonly string connectionString = Environment.GetEnvironmentVariable("iotHubConnectionString");
+        static readonly string deviceName = Environment.GetEnvironmentVariable("iotHubDevice");
+
+        static readonly RegistryManager registryManager = RegistryManager.CreateFromConnectionString(connectionString);
+
         [FunctionName("UpdateLedRgb")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "rgb")]HttpRequest req, 
